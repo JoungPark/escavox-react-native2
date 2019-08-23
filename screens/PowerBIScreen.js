@@ -1,0 +1,37 @@
+import * as React from 'react';
+import { View, StyleSheet, TextInput } from 'react-native';
+import PowerBIEmbed from 'react-native-powerbi';
+import Constants from 'expo-constants';
+
+export default class PowerBIScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      accessToken: "H4sIAAAAAAAEAB2WtQ7sCBZE_-WlHslMI01gpjazMzO1mb3af9_eyW9UVadu_eePlT7fKS3-_P2H83zD1l-PU5gt4_CjxjxI0Gh3aOgjaDdCptb16aQT4LFFPXDTOPCWu_a-WWBl7Gw9vqKk1yNAQB68BR99E55xhGDxgi4JLFIP5I-Lp2LIFcDLkRnqMCqQitAiuYMh6oDDVQMH1nnEwt7PvVninlCIWvcjqfMvDDbFMLAq3mrUZISes8izxrOkhcmjolZpIeQM6GC6ApDfRyNNqjcwQfX79zFvQzj0rAt37xFXdstrS6jP4JqYg1TeUgcqTSkWnQg7N_Eq9eyfUgTBWYhIfyO6VczIXbDTMNapDgi4aYSwF9-IdJC5EXvMtQI5GA98gWdOA6IvvayWXYVMAv2ez1YPCRLQ0Xkepg7PStvKpHcG5JCjyNfsBhtyS70ichUrVd3GIYlUxYJtNrfK5lz49Njtk7uTzoFmSHG_9YbFY_u0yfgaZeMNkpEq7bRPi9c7moS-XIjkynZJOt6m5_6xc_yHtIhqKkq1au8XdRKIVYoIHoCTkGk71QswkWB7fh3nHr2AHK0UBxfprMUZUcD79V_CHXuHorUsFYK885nOqqVLBCJ_LDm0uR-TOgpcBcFnpuf3O7ONjQhU2xFHZMpAMH7F1ih7bPKr1D8OlF8TjzsQ9FNYW7HFQnbXj4lWaxuSokbBTgI4TDHDbDu2SZ5i5YjOIij13lUVcg7QU0MoHwvjtVLNg7BIVu71k1fABck8-3UOCZ-Xr-FnZwPhVRnA7PzkQeAeLJBbUg7FJAUkzNUAGQdFINmKZ6mz0JexpHU8KjZMrZQiPeoDjsUkV2qKJ4eL-OOUZmiHF3kzEuUjTpTYiAZZjI0EYtPqITt0H8FWyKnA4qOvh4zAMs8aTxrErB_f01RAXl0gJJjZUxPLhWpYAVuR7NsX0RpJpKA9Acmlp9Cr_GBMCVZ1haLA7SkmzbG-332CWpPNiH9KE4NCU1VBnF4htY0ZzLpVttN9_d0FxXzX6FpparEXhvQ6bbRPWhESXE9rihocn5n1qVPASyWIq02idR56tHI4I-WNTnr7ombhtStQxlavH_qcgrx9PKjMMJMisC-tv6THTerGByfPLzAaX2DozK5tKpYsaBrG9pxfNKcyBTGHCwJfkqkkG_eh2a-us4wlYuZzlzgQNuZHZoGzMF3O_z4UEKsrYQpj2H1Z62cmg_6AsJuc_0QN87EvcXJFE4FkWw3AHRaW6agUuMgnCEEKFyGQsqWgV1RQDJW_x2vm2TxpVdMZq-p0KH7_0scT2jfhhCupML3iYWLuF3zbMnJ9IPbwZfDESTqL6CAZc6BatLNBIns5V2bopRh7WDeU_DyL51yMSBOupOPmXsGLanpgQtbJexSrr2th-ThjqnUoNApPS3q0rsrMARzsd6J_7Qc1AZWQKJBKcECtaX5Na1D_jjdp1A5UF3Oxt_bVHlYBRAXZX18CZ0T_l8_h-hrIpfcGYJOpYPSjHYeJEzrGOQGDEkAnTSG-Kf14ur3Ax_HswzoHuggVgQSVjJm0_SX5IiFgITGVg40dPuUCqP1GgWVPYR4cwZcDt1LNJtktLLmpqUzSTsl6EHSYMQyq0xhdfAPo4DSASKkI6XUKgRLtqD5sLZ6j2DYegTCXRmkocPpicW2yzu-tWloee9E3q4GvMNj87M0jOywpTpJE1x4_ZeCIpsimd9pbS4jxzI5clp3lZbFVZeuuwb8nXj0XLPBND9c7ndlZ0d3c45nPCzG0OaqHpgUPowg3UUKtPv8qLgh0l-yFCO8_aRXEEDGp6oWgh-_ai7jyVC8MsnZy5UcpCj8EahqY6hzpqKI5o6M8HuOQ9S1eXkts4jfBw-o1ifpUEL_dVgCAsyTs34JuUbg38Mlb5VAP2mmZj5RsDv-r9O7rlUNLwRlodQFCa3ApV0pxYdaBrjdOW3CsvQhxjYbvZQ_ihlXIAy0fOYOAb4DU4TjnwBzYK-fDAHf36-veT66-TGbKkKyUDBI6hfJvWdalkrONb79bQMcWvt_Po9j9dipUXtkEwJM6Z5gO7F37pmyGCn2OwnuXiC9R8hvD9jIyOVwpcZAC1YFDzXf5WSiA2Ou6e0YI77i1PQ0BVfX1p2goaMulyeR2FAP397YFZlKPdQcg_X_-_PWHW595n7Ty-U2HB0Zan9XhcNTnpd6mMlVGFwah2Gs-nzblIWY5zZILK6wBQPYYpRVt5Q_M3syROL8_5ELCZr4XAt9emla5KMc9Z-VicxiP9-wsybzRNuB7H7qUSl1p-o1EShEVnlCtDtdXg4B1t8squQ3SIMbbZ73JcOrr57CzStJF6XaN34K4pc-y0AGcObndCfSLtrDoDGTtsBvyhZyL68KgWYJw4r24jxWMygKGkGqSeQzKaM6jEfdR4p7EC932QzqU_kPsB3Ip7yTWar6E6AjHTIpexHQ1RrSVOFbpVP27NYTgrOlV14Tk19F9LjIErgrkwjXHOiBc9sqrEcN5ooAwOiCYJ7eRFOL1z78yP3NTrkrwU9lVOXQN4w5E-bK7PWI3-VSu_71y23pM92Mtf2f7nJ2NUSocGV68VAlNWwOual3s3ZwmopCRXgLTNICalIOEQ7ioPKoyTu3q7hH0r8JrUWsCAW8NrtCOARhe8jeeUOuWkZsG7aL6wFAkjRDKFsDGGYBGcQ_ys3jpUsVhhnTfY5dVKvtyvKKeynrrv9TZB6ieomDkscOwVqTgoptfUQLwAbUeQ2mMHoJR82Yw-_VZ3hRgdkNd79eyfyOnXee-IItE8EXIjPgM6egTvDF8m4PbpD2DNrLgYZdqYGq-FKS86MCHtieI_VV_rQsR7w-w1le5LbuEV2Ajp1CZYp9mptSeSsrMJE7e2LEInnvsaas8NVVteevOic0lXRvLbOwynv8v83__B-xiXzQuCwAA",
+      embedUrl: "https://app.powerbi.com/reportEmbed?reportId=f6bfd646-b718-44dc-a378-b73e6b528204&groupId=be8908da-da25-452e-b220-163f52476cdd&config=eyJjbHVzdGVyVXJsIjoiaHR0cHM6Ly9XQUJJLVVTLU5PUlRILUNFTlRSQUwtcmVkaXJlY3QuYW5hbHlzaXMud2luZG93cy5uZXQifQ%3d%3d",
+      id: "f6bfd646-b718-44dc-a378-b73e6b528204",
+    }
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <PowerBIEmbed 
+        accessToken= {this.state.accessToken}
+        embedUrl= {this.state.embedUrl}
+        id={this.state.id}
+        />
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingTop: Constants.statusBarHeight,
+    backgroundColor: '#ecf0f1',
+    padding: 8,
+  },
+});
