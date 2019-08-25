@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "EscaVox by Axsari",
+    "name": "EscaVoxPowerBI",
     "slug": "escavox-react-native2",
     "privacy": "public",
     "sdkVersion": "34.0.0",
@@ -24,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.escavox.mobile.powerbi"
     },
     "android": {
       "package": "com.escavox.mobile.powerbi"

@@ -14,13 +14,17 @@ export default class PowerBIScreen extends React.Component {
   }
 
   render() {
+    const config = {
+      type: 'report',
+      tokenType: 1,
+      accessToken: this.state.accessToken,
+      embedUrl: this.state.embedUrl,
+      id: this.state.id,
+    }
+
     return (
       <View style={styles.container}>
-        <PowerBIEmbed 
-        accessToken= {this.state.accessToken}
-        embedUrl= {this.state.embedUrl}
-        id={this.state.id}
-        />
+        <PowerBIEmbed embedConfiguration={config} />
       </View>
     )
   }

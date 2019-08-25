@@ -63,7 +63,7 @@ export default class LoginScreen extends React.Component {
         ref={(input) => this.password = input}/>
 
         <TouchableOpacity style={styles.button}> 
-            <Text style={styles.buttonText} onPress={this.saveData}>{this.props.type}Submit</Text>
+            <Text style={styles.buttonText} onPress={this.saveData}>{this.props.type}Login</Text>
         </TouchableOpacity>
       </View>
     );
