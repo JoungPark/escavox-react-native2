@@ -31,7 +31,6 @@ export default class LoginScreen extends React.Component {
   submit = async()=>{
     const {email,password} = this.state;
 
-    console.log(this.state.rememberme)
     if (this.state.rememberme) {
       //save data with asyncstorage
       let loginDetails={
@@ -49,11 +48,11 @@ export default class LoginScreen extends React.Component {
     .then(data => {
       console.log(`${data.Name} ${data.UserToken}`);
       this.props.navigation.navigate('Main');
-      () => { this.setState({ isLoading: false }); }
+      this.setState({ isLoading: false });
     })
     .catch(err => {
       alert(err.response.data.Description);
-      () => { this.setState({ isLoading: false }); }
+      this.setState({ isLoading: false });
     })
     .finally();
   }
