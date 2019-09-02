@@ -1,75 +1,73 @@
-import * as React from 'react';
 import axios from 'axios';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyboard } from 'react-native';
-import { Notifications } from 'expo';
-import * as Permissions from 'expo-permissions';
+import * as React from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 
 export default class LoginScreen extends React.Component {
   constructor(props){        
      super(props);        
      this.state={
         email:'',
-        password: ''
+        password: '',
+        isLoading: false,
+        rememberme: false,
      }
   }
 
-  saveData =async()=>{
+  componentDidMount = () => {
+    this.loadData();
+  }
+
+  loadData = async()=>{
+    let loginDetails = await AsyncStorage.getItem('loginDetails');
+    if (loginDetails) {
+      let ld = JSON.parse(loginDetails);
+      this.setState({ rememberme: true, email: ld.email, password: ld.password });
+    } else {
+      this.setState({ rememberme: false });
+    }
+  }
+
+  submit = async()=>{
     const {email,password} = this.state;
 
-    //save data with asyncstorage
-    let loginDetails={
-        email: email,
-        password: password
+    if (this.state.rememberme) {
+      //save data with asyncstorage
+      let loginDetails={
+          email: email,
+          password: password
+      };
+      AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+    } else {
+      AsyncStorage.removeItem('loginDetails');
     }
 
-    // alert(email);
-
+    this.setState({ isLoading: true });
     axios.get(`http://dev.api.escavox.com/api/users/1.0/Authenticate/${email}/${password}`)
     .then(response => response.data)
-    .then(async(data) => {
-         alert(data.Name + ' ' + data.UserToken);
-      
-      
-      const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-      );
-      let finalStatus = existingStatus;
-      alert(finalStatus);
-      // only ask if permissions have not already been determined, because
-      // iOS won't necessarily prompt the user a second time.
-      if (existingStatus !== 'granted') {
-        // Android remote notification permissions are granted during the app
-        // install, so this will only ask on iOS
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        finalStatus = status;
-      }
-
-      // Stop here if the user did not grant permissions
-      if (finalStatus !== 'granted') {
-        return;
-      }
-
-
-
-      //this.props.navigation.navigate('Main');
+    .then(data => {
+      console.log(`${data.Name} ${data.UserToken}`);
+      this.props.navigation.navigate('Main');
+      this.setState({ isLoading: false });
     })
     .catch(err => {
-      alert('error');
-    });
-  }
-  showData = async()=>{
-    let loginDetails = await AsyncStorage.getItem('loginDetails');
-    let ld = JSON.parse(loginDetails);
-    alert('email: '+ ld.email + ' ' + 'password: ' + ld.password);
+      alert(err.response.data.Description);
+      this.setState({ isLoading: false });
+    })
+    .finally();
   }
 
   render() {
     return (
       <View style={styles.container}>
+        {
+          (this.state.isLoading)? <ActivityIndicator size="large" color="#0000ff" />: null
+        }
         <Text style={styles.paragraph}>
           Welcome! EscaVox
         </Text>
         <TextInput style={styles.inputBox}
+        value={this.state.email}
         onChangeText={(email) => this.setState({email})}
         underlineColorAndroid='rgba(0,0,0,0)' 
         placeholder="Email"
@@ -79,6 +77,7 @@ export default class LoginScreen extends React.Component {
         onSubmitEditing={()=> this.password.focus()}/>
                 
         <TextInput style={styles.inputBox}
+        value={this.state.password}
         onChangeText={(password) => this.setState({password})} 
         underlineColorAndroid='rgba(0,0,0,0)' 
         placeholder="Password"
@@ -86,8 +85,10 @@ export default class LoginScreen extends React.Component {
         placeholderTextColor = "#002f6c"
         ref={(input) => this.password = input}/>
 
+        <CheckBox title='Remember me' checked={this.state.rememberme} onPress={() => this.setState({rememberme: !this.state.rememberme})}/>
+
         <TouchableOpacity style={styles.button}> 
-            <Text style={styles.buttonText} onPress={this.saveData}>{this.props.type}Login</Text>
+            <Text style={styles.buttonText} onPress={this.submit}>{this.props.type}Login</Text>
         </TouchableOpacity>
       </View>
     );
