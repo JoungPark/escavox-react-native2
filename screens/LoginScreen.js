@@ -1,7 +1,8 @@
 import * as React from 'react';
 import axios from 'axios';
-
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, Keyboard } from 'react-native';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 export default class LoginScreen extends React.Component {
   constructor(props){        
@@ -25,9 +26,32 @@ export default class LoginScreen extends React.Component {
 
     axios.get(`http://dev.api.escavox.com/api/users/1.0/Authenticate/${email}/${password}`)
     .then(response => response.data)
-    .then(data => {
-    //   alert(data.Name + ' ' + data.UserToken);
-      this.props.navigation.navigate('Main');
+    .then(async(data) => {
+         alert(data.Name + ' ' + data.UserToken);
+      
+      
+      const { status: existingStatus } = await Permissions.getAsync(
+        Permissions.NOTIFICATIONS
+      );
+      let finalStatus = existingStatus;
+      alert(finalStatus);
+      // only ask if permissions have not already been determined, because
+      // iOS won't necessarily prompt the user a second time.
+      if (existingStatus !== 'granted') {
+        // Android remote notification permissions are granted during the app
+        // install, so this will only ask on iOS
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+
+      // Stop here if the user did not grant permissions
+      if (finalStatus !== 'granted') {
+        return;
+      }
+
+
+
+      //this.props.navigation.navigate('Main');
     })
     .catch(err => {
       alert('error');

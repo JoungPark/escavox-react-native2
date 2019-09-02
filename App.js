@@ -1,4 +1,5 @@
-import { AppLoading } from 'expo';
+import { Notifications, AppLoading } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import React, { useState } from 'react';
