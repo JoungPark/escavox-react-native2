@@ -2,6 +2,8 @@ import axios from 'axios';
 import * as React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator } from 'react-native';
 import { CheckBox } from 'react-native-elements';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 
 export default class LoginScreen extends React.Component {
   constructor(props){        
@@ -45,8 +47,9 @@ export default class LoginScreen extends React.Component {
     this.setState({ isLoading: true });
     axios.get(`http://dev.api.escavox.com/api/users/1.0/Authenticate/${email}/${password}`)
     .then(response => response.data)
-    .then(data => {
-      console.log(`${data.Name} ${data.UserToken}`);
+    .then(async(data) => {
+      this.registerForPushNotifications(data);      
+
       this.props.navigation.navigate('Main');
       this.setState({ isLoading: false });
     })
@@ -55,6 +58,54 @@ export default class LoginScreen extends React.Component {
       this.setState({ isLoading: false });
     })
     .finally();
+  }
+
+  // Save the user's expo push token on the server
+  registerForPushNotifications = async(data) => {
+    console.log(data);
+    const { status: existingStatus } = await Permissions.getAsync(
+      Permissions.NOTIFICATIONS
+    );
+    let finalStatus = existingStatus;
+  
+    // only ask if permissions have not already been determined, because
+    // iOS won't necessarily prompt the user a second time.
+    if (existingStatus !== 'granted') {
+      // Android remote notification permissions are granted during the app
+      // install, so this will only ask on iOS
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+  
+    // Stop here if the user did not grant permissions
+    if (finalStatus !== 'granted') {
+      return;
+    }
+  
+    // Get the token that uniquely identifies this device
+    let token = await Notifications.getExpoPushTokenAsync();
+    
+    // Register device push notification token
+    axios.post('http://dev.api.escavox.com/api/users/1.0/RegisterNotificationToken',
+      {
+        Email: data.Email,
+        Token: token
+      }, 
+      {
+        headers: {
+          'SecurityToken': data.Token,
+          'UserToken': data.UserToken,
+          'Access-Control-Allow-Origin': 'true',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+    .then(function (response) {
+      
+    })
+    .catch(function (error) {
+      alert(error.response.data.Description);
+    });
   }
 
   render() {
