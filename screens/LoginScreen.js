@@ -32,18 +32,13 @@ export default class LoginScreen extends React.Component {
     const {email,password} = this.state;
 
     if (this.state.rememberme) {
-      //save data with asyncstorage
-      let loginDetails={
-          email: email,
-          password: password
-      };
-      AsyncStorage.setItem('loginDetails', JSON.stringify(loginDetails));
+      AsyncStorage.setItem('loginDetails', JSON.stringify({ email, password }));
     } else {
       AsyncStorage.removeItem('loginDetails');
     }
 
     this.setState({ isLoading: true });
-    axios.get(`http://dev.api.escavox.com/api/users/1.0/Authenticate/${email}/${password}`)
+    axios.post(`http://dev.api.escavox.com/api/users/1.0/AuthToken`, { EmailAddress: email, Password: password })
     .then(response => response.data)
     .then(data => {
       console.log(`${data.Name} ${data.UserToken}`);
