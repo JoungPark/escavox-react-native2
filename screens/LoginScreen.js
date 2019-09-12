@@ -57,7 +57,6 @@ export default class LoginScreen extends React.Component {
 
   // Save the user's expo push token on the server
   registerForPushNotifications = async(data) => {
-    console.log(data);
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     );
