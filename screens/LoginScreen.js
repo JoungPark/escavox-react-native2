@@ -43,8 +43,8 @@ export default class LoginScreen extends React.Component {
     
     axios.post('http://dev.api.escavox.com/api/users/1.0/AuthToken', { EmailAddress: email, Password: password })
     .then(response => response.data)
-    .then(async(data) => {
-      await this.registerForPushNotifications(data);      
+    .then((data) => {
+      this.registerForPushNotifications(data);      
       
       this.setState({ isLoading: false });
 
