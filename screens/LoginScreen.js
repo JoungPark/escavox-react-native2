@@ -40,13 +40,15 @@ export default class LoginScreen extends React.Component {
     }
 
     this.setState({ isLoading: true });
-    axios.post(`http://dev.api.escavox.com/api/users/1.0/AuthToken`, { EmailAddress: email, Password: password })
+    
+    axios.post('http://dev.api.escavox.com/api/users/1.0/AuthToken', { EmailAddress: email, Password: password })
     .then(response => response.data)
-    .then(async(data) => {
+    .then((data) => {
       this.registerForPushNotifications(data);      
+      
+      this.setState({ isLoading: false });
 
       this.props.navigation.navigate('Main');
-      this.setState({ isLoading: false });
     })
     .catch(err => {
       alert(err.response.data.Description);
@@ -57,7 +59,6 @@ export default class LoginScreen extends React.Component {
 
   // Save the user's expo push token on the server
   registerForPushNotifications = async(data) => {
-    console.log(data);
     const { status: existingStatus } = await Permissions.getAsync(
       Permissions.NOTIFICATIONS
     );
