@@ -1,11 +1,16 @@
 import axios from 'axios';
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
-export default class LoginScreen extends React.Component {
+import * as actions from '../actions';
+
+class LoginScreen extends React.Component {
   constructor(props){        
      super(props);        
      this.state={
@@ -16,8 +21,8 @@ export default class LoginScreen extends React.Component {
      }
   }
 
-  componentDidMount = () => {
-    this.loadData();
+  componentDidMount = async() => {
+    await this.loadData();
   }
 
   loadData = async()=>{
@@ -31,7 +36,7 @@ export default class LoginScreen extends React.Component {
   }
 
   submit = async()=>{
-    const {email,password} = this.state;
+    const { email,password } = this.state;
 
     if (this.state.rememberme) {
       AsyncStorage.setItem('loginDetails', JSON.stringify({ email, password }));
@@ -40,21 +45,21 @@ export default class LoginScreen extends React.Component {
     }
 
     this.setState({ isLoading: true });
-    
-    axios.post('http://dev.api.escavox.com/api/users/1.0/AuthToken', { EmailAddress: email, Password: password })
-    .then(response => response.data)
-    .then((data) => {
-      this.registerForPushNotifications(data);      
-      
-      this.setState({ isLoading: false });
 
-      this.props.navigation.navigate('Main');
-    })
-    .catch(err => {
-      alert(err.response.data.Description);
+    const { Actions } = this.props;
+    try {
+      const data = await Actions.signIn(email, password);
+
+      this.registerForPushNotifications(data);
       this.setState({ isLoading: false });
-    })
-    .finally();
+      
+      this.props.navigation.navigate('Main');
+    } catch(error) {
+      let message = 'Undefined error occured.';
+      if (error.response.data.Description) message = error.response.data.Description;
+      alert(message);
+      this.setState({ isLoading: false });
+    }
   }
 
   // Save the user's expo push token on the server
@@ -82,7 +87,7 @@ export default class LoginScreen extends React.Component {
     let token = await Notifications.getExpoPushTokenAsync();
     
     // Register device push notification token
-    axios.post('http://dev.api.escavox.com/api/users/1.0/RegisterNotificationToken',
+    axios.post(`${Constants.manifest.extra.apiUrl}/api/users/1.0/RegisterNotificationToken`,
       {
         Email: data.Email,
         Token: token
@@ -141,6 +146,13 @@ export default class LoginScreen extends React.Component {
     );
   }
 }
+
+export default connect(
+  null,
+  (dispatch) => ({
+    Actions: bindActionCreators(actions, dispatch)
+  })
+)(LoginScreen);
 
 const styles = StyleSheet.create({
   container: {

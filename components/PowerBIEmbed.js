@@ -2,11 +2,6 @@ import React, { Component } from 'react';
 import { WebView } from 'react-native';
 
 class PowerBIEmbed extends Component {
-  constructor(props) {
-    super(props);
-    this.configuration = this.setConfiguration(props);
-  }
-
   setConfiguration = (props) => {
     let embedConfiguration = {
       type: 'report',
@@ -78,7 +73,7 @@ class PowerBIEmbed extends Component {
   }
 
   render() {
-    const html = this.getTemplate(this.configuration);
+    const html = this.getTemplate(this.setConfiguration(this.props));
     return (
       <WebView source={{ html }} />
     );
