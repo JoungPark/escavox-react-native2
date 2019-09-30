@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { connect } from 'react-redux';
 // import PowerBIEmbed from 'react-native-powerbi';
 import PowerBIEmbed from '../components/PowerBIEmbed';
@@ -13,15 +13,18 @@ class PowerBIScreen extends React.Component {
       SecurityToken: this.props.token,
       UserToken: this.props.userToken,
     };
+    this.setState({ isLoading: true });
     axios.get(`${Constants.manifest.extra.apiUrl}/api/powerbi/1.0/Reports`, config)
     .then(response => {
-      const report = response.data[0];
-      this.setState({
-        accessToken: report.AccessToken,
-        embedUrl: report.EmbedUrl,
-        id: report.EmbedReportId,
-        pageName: report.PageName,
-      });
+      if (response.data.length > 0) {
+        const report = response.data[0];
+        this.setState({
+          accessToken: report.AccessToken,
+          embedUrl: report.EmbedUrl,
+          id: report.EmbedReportId,
+          pageName: report.PageName,
+        });
+      }
       this.setState({ isLoading: false });
     })
     .catch(err => {
@@ -32,7 +35,7 @@ class PowerBIScreen extends React.Component {
   }
 
   render() {
-    if (!this.state || !this.state.accessToken) {
+    if (!this.state || this.state.isLoading) {
       return (<ActivityIndicator size="large" color="#0000ff" />);
     }
 
@@ -47,7 +50,9 @@ class PowerBIScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <PowerBIEmbed embedConfiguration={config} />
+        {
+          this.state.id ? <PowerBIEmbed embedConfiguration={config} />: <Text style={styles.noDataText}>No Power BI Report</Text>
+        }
       </View>
     )
   }
@@ -68,5 +73,11 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: '#ecf0f1',
     padding: 8,
+  },
+  noDataText: {
+    fontSize: 17,
+    color: 'rgba(96,100,109, 1)',
+    lineHeight: 24,
+    textAlign: 'center',
   },
 });
