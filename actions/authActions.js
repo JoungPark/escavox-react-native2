@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 
-import { SIGNIN, SIGNOUT } from './types';
+import { SIGNIN, SIGNOUT } from '../reducers/types';
 
 export const signIn = (EmailAddress, Password) => {
   return (dispatch) => {
@@ -18,11 +18,7 @@ export const signIn = (EmailAddress, Password) => {
         },
       });
       return response.data;
-    })
-    .catch(error => {
-      throw(error);
-    })
-    .finally();
+    });
   };
 };
 

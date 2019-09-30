@@ -1,4 +1,4 @@
-import { SIGNIN, SIGNOUT } from '../actions/types';
+import { SIGNIN, SIGNOUT } from './types';
 
 const initialState = {
   expiresAccessToken: 1,

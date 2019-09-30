@@ -25,13 +25,13 @@ class PowerBIScreen extends React.Component {
           pageName: report.PageName,
         });
       }
-      this.setState({ isLoading: false });
     })
     .catch(err => {
       alert(err.response.data.Description);
-      this.setState({ isLoading: false });
     })
-    .finally();
+    .finally(() => {
+      this.setState({ isLoading: false });
+    });
   }
 
   render() {
