@@ -14,20 +14,23 @@ class PowerBIScreen extends React.Component {
       UserToken: this.props.userToken,
     };
     this.setState({ isLoading: true });
-    axios.get(`${Constants.manifest.extra.apiUrl}/api/powerbi/1.0/Reports`, config)
+    axios.get(`${Constants.manifest.extra.apiUrl}/api/powerbi/1.0/AccessToken`, config)
     .then(response => {
-      if (response.data.length > 0) {
-        const report = response.data[0];
-        this.setState({
-          accessToken: report.AccessToken,
-          embedUrl: report.EmbedUrl,
-          id: report.EmbedReportId,
-          pageName: report.PageName,
-        });
+      const report = response.data;
+      if (!report.IsSucceed) {
+        this.setState({ errorMessage: report.ErrorMessage });
+        return;
       }
+      this.setState({
+        errorMessage: null,
+        accessToken: report.EmbedToken,
+        embedUrl: report.EmbedUrl,
+        id: report.ReportId,
+        pageName: 'defaultPageName',
+      });
     })
     .catch(err => {
-      alert(err.response.data.Description);
+      this.setState({ errorMessage: err.response.data.Description });
     })
     .finally(() => {
       this.setState({ isLoading: false });
@@ -51,7 +54,7 @@ class PowerBIScreen extends React.Component {
     return (
       <View style={styles.container}>
         {
-          this.state.id ? <PowerBIEmbed embedConfiguration={config} />: <Text style={styles.noDataText}>No Power BI Report</Text>
+          this.state.errorMessage ? <Text style={styles.errorMsgText}>{this.state.errorMessage}</Text> : <PowerBIEmbed embedConfiguration={config} />
         }
       </View>
     )
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecf0f1',
     padding: 8,
   },
-  noDataText: {
+  errorMsgText: {
     fontSize: 17,
     color: 'rgba(96,100,109, 1)',
     lineHeight: 24,
