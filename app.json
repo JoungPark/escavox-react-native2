@@ -33,7 +33,7 @@
     },
     "description": "",
     "extra": {
-      "apiUrl": "https://escavoxapi-dev.azurewebsites.net"
+      "apiUrl": "https://escavoxwebapi.azurewebsites.net"
     }
   }
 }
