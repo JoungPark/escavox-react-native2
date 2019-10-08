@@ -30,7 +30,9 @@ class PowerBIScreen extends React.Component {
       });
     })
     .catch(err => {
-      this.setState({ errorMessage: err.response.data.Description });
+      let errorMessage = 'Failed to get Power BI report. Please try again.';
+      if (err.response.data.Description) errorMessage = err.response.data.Description;
+      this.setState({ errorMessage });
     })
     .finally(() => {
       this.setState({ isLoading: false });
