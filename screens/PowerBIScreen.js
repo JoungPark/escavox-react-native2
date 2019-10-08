@@ -41,7 +41,10 @@ class PowerBIScreen extends React.Component {
 
   render() {
     if (!this.state || this.state.isLoading) {
-      return (<ActivityIndicator size="large" color="#0000ff" />);
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>);
     }
 
     const config = {
