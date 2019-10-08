@@ -53,7 +53,7 @@ class LoginScreen extends React.Component {
       this.registerForPushNotifications(data);
       this.setState({ isLoading: false });
       
-      this.props.navigation.navigate('Main');
+      this.props.navigation.navigate('PowerBI');
     } catch(error) {
       let message = 'Undefined error occured.';
       if (error.response.data.Description) message = error.response.data.Description;
